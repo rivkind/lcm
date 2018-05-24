@@ -1,0 +1,6 @@
+RewriteEngine on RewriteBase /
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Если нет - перенаправляем запрос на index.php
+    RewriteRule . index.php
