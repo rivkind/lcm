@@ -48,6 +48,9 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'view/<id:\d+>' => 'site/view',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                '<dir1:[\w\-\_\d\/]+>' => 'site/errornew',
             ],
         ],
 

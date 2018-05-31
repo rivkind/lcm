@@ -1,5 +1,7 @@
 <?php
 
+use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 
 $this->title = 'LCM - Главная страница';
@@ -38,7 +40,7 @@ $this->title = 'LCM - Главная страница';
         </thead>
         <tbody>
 
-        <tr ondblclick="window.location.href='view\?id=1'; return false" class="link_bts">
+        <tr ondblclick="window.location.href='<?=Url::to(['view/1']);?>'; return false" class="link_bts">
             <td class="resp_cell">Vasilets</td>
             <td class="owner_cell">Tartanov</td>
             <td class="network_cell">Core</td>

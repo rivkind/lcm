@@ -14,7 +14,7 @@ class m180524_072627_create_lcm_vendor_table extends Migration
     {
         $this->createTable('lcm_vendor', [
             'vendor_id' => $this->primaryKey(),
-            'vendor_name' => $this->string(50),
+            'vendor_name' => $this->string(50)->notNull()->unique(),
         ]);
     }
 

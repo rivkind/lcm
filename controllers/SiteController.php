@@ -64,6 +64,18 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    public function actionView($id)
+    {
+        return $this->render('view',[
+            'id' => $id,
+        ]);
+    }
+
+    public function actionErrornew()
+    {
+        return $this->render('error_new');
+    }
+
     /**
      * Login action.
      *

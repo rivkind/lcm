@@ -14,7 +14,7 @@ class m180524_072435_create_lcm_node_table extends Migration
     {
         $this->createTable('lcm_node', [
             'node_id' => $this->primaryKey(),
-            'node_name' => $this->string(50),
+            'node_name' => $this->string(50)->notNull()->unique(),
         ]);
     }
 

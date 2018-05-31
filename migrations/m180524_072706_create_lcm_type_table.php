@@ -14,7 +14,7 @@ class m180524_072706_create_lcm_type_table extends Migration
     {
         $this->createTable('lcm_type', [
             'type_id' => $this->primaryKey(),
-            'type_name' => $this->string(50),
+            'type_name' => $this->string(50)->notNull()->unique(),
         ]);
     }
 

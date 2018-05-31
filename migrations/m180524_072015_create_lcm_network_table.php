@@ -14,7 +14,7 @@ class m180524_072015_create_lcm_network_table extends Migration
     {
         $this->createTable('lcm_network', [
             'network_id' => $this->primaryKey(),
-            'network_name' => $this->string(50),
+            'network_name' => $this->string(50)->notNull()->unique(),
         ]);
     }
 
