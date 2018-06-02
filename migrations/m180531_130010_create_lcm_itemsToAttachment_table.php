@@ -17,6 +17,9 @@ class m180531_130010_create_lcm_itemsToAttachment_table extends Migration
             'attachment_id' => $this->integer()->notNull(),
         ]);
 
+        $this->createIndex('idx-itemsToAttachment-item_id','lcm_itemsToAttachment','item_id');
+        $this->createIndex('idx-itemsToAttachment-attachment_id','lcm_itemsToAttachment','attachment_id');
+
         $this->addForeignKey('attachment_to_item','lcm_itemsToAttachment','item_id','lcm_items','item_id');
         $this->addForeignKey('attachment_to_attach','lcm_itemsToAttachment','attachment_id','lcm_attachment','attachment_id');
     }

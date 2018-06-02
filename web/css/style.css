@@ -466,3 +466,6 @@ form.s table{
 	width: auto !important;
 	margin-bottom:0px;
 }
+.vendor_cell span{
+	display:none;
+}

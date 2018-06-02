@@ -5,6 +5,7 @@
 
 //use app\widgets\Alert;
 use yii\helpers\Html;
+use yii\helpers\Url;
 //use yii\bootstrap\Nav;
 //use yii\bootstrap\NavBar;
 use app\assets\AppAsset;
@@ -45,7 +46,7 @@ AppAsset::register($this);
 
                 <li><a href="/about" title="Создание
 "><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-                <li><a href="/login" title="Создание
+                <li><a href="<?=Url::to(['site/attach/']);?>" title="Прикрепления
 "><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></a></li>
                 <li><a class="search_btn" title="Поиск
 "><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></li>

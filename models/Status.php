@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "lcm_status".
+ * This is the model class for table "{{%status}}".
  *
  * @property int $status_id
  * @property string $status_name
  *
- * @property LcmItems[] $lcmItems
+ * @property Items[] $items
  */
 class Status extends \yii\db\ActiveRecord
 {
@@ -19,7 +19,7 @@ class Status extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'lcm_status';
+        return '{{%status}}';
     }
 
     /**
@@ -28,7 +28,9 @@ class Status extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['status_name'], 'required'],
             [['status_name'], 'string', 'max' => 50],
+            [['status_name'], 'unique'],
         ];
     }
 
@@ -46,8 +48,8 @@ class Status extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLcmItems()
+    public function getItems()
     {
-        return $this->hasMany(LcmItems::className(), ['status_id' => 'status_id']);
+        return $this->hasMany(Items::className(), ['status_id' => 'status_id']);
     }
 }

@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "lcm_vendor".
+ * This is the model class for table "{{%vendor}}".
  *
  * @property int $vendor_id
  * @property string $vendor_name
  *
- * @property LcmItems[] $lcmItems
+ * @property Items[] $items
  */
 class Vendor extends \yii\db\ActiveRecord
 {
@@ -19,7 +19,7 @@ class Vendor extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'lcm_vendor';
+        return '{{%vendor}}';
     }
 
     /**
@@ -28,7 +28,9 @@ class Vendor extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['vendor_name'], 'required'],
             [['vendor_name'], 'string', 'max' => 50],
+            [['vendor_name'], 'unique'],
         ];
     }
 
@@ -46,8 +48,13 @@ class Vendor extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLcmItems()
+    public function getItems()
     {
-        return $this->hasMany(LcmItems::className(), ['vendor_id' => 'vendor_id']);
+        return $this->hasMany(Items::className(), ['vendor_id' => 'vendor_id']);
+    }
+
+    public function getPathImages()
+    {
+        return '@web/images/' . $this->vendor_name . ".png";
     }
 }

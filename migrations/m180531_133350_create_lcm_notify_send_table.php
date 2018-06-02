@@ -19,6 +19,8 @@ class m180531_133350_create_lcm_notify_send_table extends Migration
             'day' => $this->integer()->notNull(),
         ]);
 
+        $this->createIndex('idx-notify_send-item_id','lcm_notify_send','item_id');
+
         $this->addForeignKey('notifysend_to_item','lcm_notify_send','item_id','lcm_items','item_id');
     }
 

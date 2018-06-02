@@ -34,6 +34,12 @@ class m180524_073151_create_lcm_items_table extends Migration
             'status_id' => $this->integer()->defaultValue(1),
         ]);
 
+        $this->createIndex('idx-items-network_id','lcm_items','network_id');
+        $this->createIndex('idx-items-node_id','lcm_items','node_id');
+        $this->createIndex('idx-items-vendor_id','lcm_items','vendor_id');
+        $this->createIndex('idx-items-type_id','lcm_items','type_id');
+        $this->createIndex('idx-items-status_id','lcm_items','status_id');
+
         $this->addForeignKey('item_to_network','lcm_items','network_id','lcm_network','network_id');
         $this->addForeignKey('item_to_node','lcm_items','node_id','lcm_node','node_id');
         $this->addForeignKey('item_to_vendor','lcm_items','vendor_id','lcm_vendor','vendor_id');

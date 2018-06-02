@@ -24,6 +24,8 @@ class m180531_125229_create_lcm_attachment_table extends Migration
             'isDelete' => $this->tinyInteger(1)->notNull(),
         ]);
 
+        $this->createIndex('idx-attachment-user_id','lcm_attachment','user_id');
+
         $this->addForeignKey('attachment_to_user','lcm_attachment','user_id','lcm_users','user_id');
     }
 

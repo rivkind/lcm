@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "lcm_type".
+ * This is the model class for table "{{%type}}".
  *
  * @property int $type_id
  * @property string $type_name
  *
- * @property LcmItems[] $lcmItems
+ * @property Items[] $items
  */
 class Type extends \yii\db\ActiveRecord
 {
@@ -19,7 +19,7 @@ class Type extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'lcm_type';
+        return '{{%type}}';
     }
 
     /**
@@ -28,7 +28,9 @@ class Type extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['type_name'], 'required'],
             [['type_name'], 'string', 'max' => 50],
+            [['type_name'], 'unique'],
         ];
     }
 
@@ -46,8 +48,8 @@ class Type extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLcmItems()
+    public function getItems()
     {
-        return $this->hasMany(LcmItems::className(), ['type_id' => 'type_id']);
+        return $this->hasMany(Items::className(), ['type_id' => 'type_id']);
     }
 }

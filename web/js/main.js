@@ -51,3 +51,46 @@ $(window).resize(
 
     }
 );
+
+$( document ).ready(function() {
+// attch script start //
+    $('.attch_btn').on("click", function(e) {
+        e.preventDefault();
+        $(".attchWindow").css('visibility','visible');
+    });
+    $('body').on('click',".attch_btn",function(e){
+        //console.log('a');
+        //$('.attch_btn').on("click", function(e) {
+        e.preventDefault();
+        $(".attchWindow").css('visibility','visible');
+        var h = $(".attchWindow").outerHeight();
+        var t = $(this).offset().top;
+        var l = $(this).offset().left;
+
+    });
+    $('.attchClose').on("click", function() {
+        $(".attchWindow").css('visibility','hidden');
+    });
+    $("#header_table").tablesorter();
+    var data_sort= new Array (0,0,0,0);
+    //$('parent_static').on('event', 'children_dinamic', handler);
+    $('body').on('click',"#fixedtableheader0 th",function(){
+        var $this = $(this);
+        var id = $this.attr('data_id');
+        if(id!=4){
+            var sorting = [[id,data_sort[id]],[0,0]];
+            if(data_sort[id]==0){data_sort[id]=1;}else{data_sort[id]=0;}
+            $("#header_table").trigger("sorton",[sorting]);
+            return false;
+        }
+    });
+    //$('.header_table').fixedtableheader();
+    //$("#fixedtableheader0").css('display','table');
+    $('.edit_attach').click(function(){
+        $('#label_attach').html($(this).parent().prev().prev().prev().prev().html());
+        $('#comment_edit').val($(this).parent().prev().prev().prev().html());
+        $('#data_id').val($(this).data('id'));
+
+    });
+
+});

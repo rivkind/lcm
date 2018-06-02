@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "lcm_node".
+ * This is the model class for table "{{%node}}".
  *
  * @property int $node_id
  * @property string $node_name
  *
- * @property LcmItems[] $lcmItems
+ * @property Items[] $items
  */
 class Node extends \yii\db\ActiveRecord
 {
@@ -19,7 +19,7 @@ class Node extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'lcm_node';
+        return '{{%node}}';
     }
 
     /**
@@ -28,7 +28,9 @@ class Node extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['node_name'], 'required'],
             [['node_name'], 'string', 'max' => 50],
+            [['node_name'], 'unique'],
         ];
     }
 
@@ -46,8 +48,8 @@ class Node extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLcmItems()
+    public function getItems()
     {
-        return $this->hasMany(LcmItems::className(), ['node_id' => 'node_id']);
+        return $this->hasMany(Items::className(), ['node_id' => 'node_id']);
     }
 }

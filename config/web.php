@@ -48,10 +48,15 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'view/<id:\d+>' => 'site/view',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-                '<dir1:[\w\-\_\d\/]+>' => 'site/errornew',
+                '<action:\w+>/<id:\d+>' => 'site/<action>',
+                '<action:\w+>/' => 'site/<action>',
             ],
+        ],
+        'formatter' => [
+            'dateFormat' => 'dd.MM.yyyy HH:i',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => ' ',
+            //'currencyCode' => 'EUR',
         ],
 
     ],

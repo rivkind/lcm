@@ -20,6 +20,8 @@ class m180531_132409_create_lcm_logValue_table extends Migration
             'current_value' => $this->text(),
         ]);
 
+        $this->createIndex('idx-logValue-log_id','lcm_logValue','log_id');
+
         $this->addForeignKey('logValue_to_log','lcm_logValue','log_id','lcm_log','log_id');
     }
 
