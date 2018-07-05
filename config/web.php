@@ -6,7 +6,7 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'name'=>'LCM',
-
+    'language' =>'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -29,10 +29,10 @@ $config = [
 
                     'config' => [
                         'account_suffix'        => 'xxx',
-                        'domain_controllers'    => ['xxxx'],
+                        'domain_controllers'    => ['xxx'],
                         'base_dn'               => 'xxx',
                         'admin_username'        => 'xxx',
-                        'admin_password'        => 'xxx',
+                        'admin_password'        => 'xx',
 ]
                 ],
             ],
@@ -63,8 +63,8 @@ $config = [
             'useFileTransport' => true,
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'xxxx',
-                'username' => 'xxx',
+                'host' => 'xxx',
+                'username' => 'xxxx',
                 'password' => 'xxx',
                 'port' => '587',
                 'encryption' => 'tls',

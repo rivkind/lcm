@@ -14,25 +14,7 @@ Yii::$app->params['search'] = true;
 <table class="table table-hover header_table" id="header_table" style="width: auto !important;">
     <thead>
         <tr class="tablesorter-filter-row tablesorter-ignoreRow">
-            <th data_id="0" class="resp_cell header">Responsible for planning</th>
-            <th data_id="1" class="owner_cell header">Technical owner</th>
-            <th data_id="2" class="network_cell header">Network type</th>
-            <th data_id="3" class="node_cell header">Node type</th>
-            <th data_id="4" class="vendor_cell header">Vendor</th>
-            <th data_id="5" class="hwcw_cell header">HW SW</th>
-            <th data_id="6" class="hwtype_cell header">HW Type</th>
-            <th data_id="7" class="product_cell header">Product Name</th>
-            <th data_id="8" class="product_type_cell header">Product Type</th>
-            <th data_id="9" class="bom_cell header">BOM Code</th>
-            <th data_id="10" class="descr_cell header">Technical description</th>
-            <th data_id="11" class="q_cell header">GA</th>
-            <th data_id="12" class="q_cell header">EOM</th>
-            <th data_id="13" class="q_cell header">LDSP</th>
-            <th data_id="14" class="q_cell header">EOFS</th>
-            <th data_id="15" class="q_cell header">EOS</th>
-            <th data_id="16" class="q_cell header">SPMS</th>
-            <th data_id="17" class="update_cell header">Last update</th>
-            <th data_id="18" class="header">Status</th>
+            <?=$this->render('header_cell_table')?>
         </tr>
     </thead>
     <tbody>
@@ -110,28 +92,7 @@ Yii::$app->params['search'] = true;
     <table class="table table-hover header_table1" id="header_table1">
         <thead>
         <tr class="">
-            <th data_id="0" class="resp_cell">Responsible for planning</th>
-            <th data_id="1" class="owner_cell">Technical owner</th>
-            <th data_id="2" class="network_cell">Network type</th>
-            <th data_id="3" class="node_cell">Node type</th>
-            <th data_id="4" class="vendor_cell">Vendor</th>
-            <th data_id="5" class="hwcw_cell">HW SW</th>
-            <th data_id="6" class="hwtype_cell">HW Type</th>
-            <th data_id="7" class="product_cell">Product Name</th>
-            <th data_id="8" class="product_type_cell">Product Type</th>
-            <th data_id="9" class="bom_cell">BOM Code
-            </th>
-            <th data_id="10" class="descr_cell">Technical description</th>
-            <th data_id="11" class="q_cell" title="General Availability">GA</th>
-            <th data_id="12" class="q_cell" title="End Of Marketing Date">EOM</th>
-            <th data_id="13" class="q_cell" title="Last Order Date of Spare Parts">LDSP</th>
-            <th data_id="14" class="q_cell" title="End Of Full Support">EOFS</th>
-            <th data_id="15" class="q_cell" title="End Of Service Date">EOS</th>
-            <th data_id="16" class="q_cell" title="Last date can be included in SPMS contract">SPMS</th>
-            <th data_id="17" class="update_cell">Last update
-            </th>
-            <th data_id="18" class="status_cell">Status
-            </th>
+            <?=$this->render('header_cell_table')?>
         </tr>
         <tr class="search_field tablesorter-filter-row tablesorter-ignoreRow"<?php if(Yii::$app->request->get("filter")){?> style="display: table-row;" <?php }?>>
             <td><input class="resp_cell_search form-control input-sm form_search" name="r" value="<?=Yii::$app->request->get("r")?>" type="text"></td>

@@ -131,6 +131,7 @@ class Log extends \yii\db\ActiveRecord
 
         foreach ($data as $d){
             $type = $d->log_value;
+
             $current = $d->current_value;
             $prev = $d->prev_value;
             if($type == 'general_availability' || $type == 'date_marketing' || $type == 'date_spare_parts' || $type == 'date_full_support' || $type == 'date_service' || $type == 'date_spms'){
@@ -165,10 +166,14 @@ class Log extends \yii\db\ActiveRecord
                 $attach = Attachment::findOne(["attachment_id" => $current]);
                 $current = $attach->attachment_name;
             }
+
+            //if($type=='bom_code'){
+            //    $type = Yii::t( 'header_table', 'bom_code' );
+            //}
             if($type == 'attach_added' || $type == 'attach_deleted'){
                 $txt.="<div>".$type.": <b>".$current."</b></div>";
             }else{
-                $txt.="<div>".$type.": <b>".$prev."</b> на <b>".$current."</b></div>";
+                $txt.="<div>".Yii::t( 'header_table', $type ).": <b>".$prev."</b> на <b>".$current."</b></div>";
             }
 
         }
