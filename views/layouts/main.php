@@ -4,6 +4,7 @@
 /* @var $content string */
 
 //use app\widgets\Alert;
+use kartik\widgets\Growl;
 use yii\helpers\Html;
 use yii\helpers\Url;
 //use yii\bootstrap\Nav;
@@ -26,6 +27,34 @@ AppAsset::register($this);
 
 <body>
 <?php $this->beginBody() ?>
+<?php
+if(Yii::$app->session->hasFlash('success')):
+    echo Growl::widget([
+        'type' => Growl::TYPE_SUCCESS,
+        'icon' => 'glyphicon glyphicon-ok-sign',
+        'title' => Yii::$app->session->getFlash('success'),
+        'showSeparator' => false,
+        //'body' => Yii::$app->session->getFlash('success'),
+    ]);
+endif;
+?>
+
+<?php
+if(Yii::$app->session->hasFlash('error')):
+    echo Growl::widget([
+        'type' => Growl::TYPE_DANGER,
+        'icon' => 'glyphicon glyphicon-remove-sign',
+        //'title' => Yii::$app->session->getFlash('error'),
+        'showSeparator' => false,
+
+        'body' => Yii::$app->session->getFlash('error'),
+        'pluginOptions' => [
+            'delay' => false,
+
+        ]
+    ]);
+endif;
+?>
 <nav class="navbar navbar-default navbar-fixed-top" style="z-index:99;">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -42,20 +71,21 @@ AppAsset::register($this);
 
             <ul class="nav navbar-nav navbar-right">
 
-
-
-                <li><a href="/about" title="Создание
-"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-                <li><a href="<?=Url::to(['site/attach/']);?>" title="Прикрепления
-"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></a></li>
-                <li><a class="search_btn" title="Поиск
-"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></li>
+                <?php if (Yii::$app->user->can('lcm_admin')):?>
+                <li><a href='<?=Url::to(['admin/default']);?>'><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+                <?php endif;?>
+                <li><a href="<?=Url::to(['site/form']);?>" title="Создание"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+                <li><a href="<?=Url::to(['attach/']);?>" title="Прикрепления"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></a></li>
+                <?php if(Yii::$app->params['search']):?>
+                <li><a class="search_btn" title="Поиск"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></li>
+                <?php endif;?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>
                     <ul class="dropdown-menu">
-                        <li>alexey.rivkind</li>
+                        <li><?=Yii::$app->user->identity->username?></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="/?logout=1"><span class="glyphicon glyphicon-off" aria-hidden="true"></span>Выйти
+                        <li>
+                            <a href="<?=Url::to(['site/logout/']);?>"><span class="glyphicon glyphicon-off" aria-hidden="true"></span><?=Yii::t( 'app', 'Exit' );?>
                             </a></li>
                     </ul>
                 </li>
@@ -63,7 +93,7 @@ AppAsset::register($this);
         </div><!--/.nav-collapse -->
     </div>
 </nav>
-<div class="container-fluid content_bl">
+<div class="container-fluid content_bl"<?php if(Yii::$app->request->get('filter')){?> style="padding-top: 116px;" <?php }?>>
 <?= $content ?>
 </div>
 <?php $this->endBody() ?>

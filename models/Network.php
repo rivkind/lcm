@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%network}}".
@@ -51,5 +52,9 @@ class Network extends \yii\db\ActiveRecord
     public function getItems()
     {
         return $this->hasMany(Items::className(), ['network_id' => 'network_id']);
+    }
+
+    public static function allNetwork(){
+        return ArrayHelper::map(self::find()->orderBy('network_name')->all(),'network_id','network_name');
     }
 }

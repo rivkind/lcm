@@ -32,6 +32,7 @@ class m180524_073151_create_lcm_items_table extends Migration
             'date_service' => $this->integer()->defaultValue(0),
             'date_spms' => $this->integer()->defaultValue(0),
             'status_id' => $this->integer()->defaultValue(1),
+            'updated_at' => $this->integer()->notNull(),
         ]);
 
         $this->createIndex('idx-items-network_id','lcm_items','network_id');

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%node}}".
@@ -51,5 +52,9 @@ class Node extends \yii\db\ActiveRecord
     public function getItems()
     {
         return $this->hasMany(Items::className(), ['node_id' => 'node_id']);
+    }
+
+    public static function allNode(){
+        return ArrayHelper::map(self::find()->orderBy('node_name')->all(),'node_id','node_name');
     }
 }

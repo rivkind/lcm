@@ -5,9 +5,12 @@ use yii\helpers\Url;
 /* @var $this yii\web\View
  * @var $item \app\models\Items
  */
-?><a href="<?=Url::to(['site/edit/','id'=>$item->item_id]);?>" class="btn btn-default btn-sm viewBtnEdit" title="Редактировать">
+?><a href="<?=Url::to(['site/form/','id'=>$item->item_id]);?>" class="btn btn-default btn-sm viewBtnEdit" title="Редактировать">
     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
 </a>
+<?php if($item->checkUpdate()):?>
+<a href='<?=Url::to(['site/update/','id'=>$item->item_id]);?>' class="btn btn-default btn-sm viewBtnUpdate" title='Update'>⊜</a>
+<?php endif;?>
 <a href="<?=Yii::$app->request->referrer?>" class="btn btn-default btn-sm" style="float:right; font-size:16px; margin-right:10px;" title="Назад"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>						<form method="post">
     <table width="100%" cellspacing="0" cellpadding="0" border="0">
         <tbody>
@@ -99,9 +102,18 @@ use yii\helpers\Url;
         </tr>
         <tr>
             <th class="rved-label">Attach</th>
-            <td class="rved-values" colspan="3">
+            <td class="rved-values" colspan='3'>
+                <?php foreach($attach_item as $attach):?>
+                <div class='row_attach'>
+                    <a href='<?=Url::to(['attach/view','key'=>$attach->attachment_key]);?>'>
+                        <span class="glyphicon glyphicon-file" aria-hidden="true" style='color:#ccc;margin-right:5px;'></span>
+                        <?=$attach->attachment_name?>
+                    </a>
+                </div>
+                <?php endforeach;?>
             </td>
         </tr>
+
         </tbody>
     </table>
 </form>

@@ -13,6 +13,35 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'ad' => [
+            'class' => 'Edvlerblog\Adldap2\Adldap2Wrapper',
+
+            'providers' => [
+                'default' => [ //Providername default
+                    // Connect this provider on initialisation of the LdapWrapper Class automatically
+                    'autoconnect' => true,
+
+                    'config' => [
+                        // Your account suffix, for example: matthias.maderer@example.lan
+                        'account_suffix'        => '@life.com.by',
+
+                        // You can use the host name or the IP address of your controllers.
+                        'domain_controllers'    => ['srv-dc-01.best.local'],
+
+                        // Your base DN. This is usually your account suffix.
+                        'base_dn'               => 'DC=best,DC=local',
+
+                        // The account to use for querying / modifying users. This
+                        // does not need to be an actual admin account.
+                        'admin_username'        => 'job-functionList',
+                        'admin_password'        => 'swims-sZ4Uj',
+                    ]
+                ],
+            ], // close providers array
+        ], //close ad
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -27,6 +56,13 @@ $config = [
         'db' => $db,
     ],
     'params' => $params,
+    'controllerMap' => [
+        //...
+        'ldapcmd' => [
+            'class' => 'Edvlerblog\Adldap2\commands\LdapController',
+        ],
+        //...
+    ],
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.

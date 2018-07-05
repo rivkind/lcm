@@ -5,13 +5,41 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'name'=>'LCM',
+
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'modules' => [
+        'admin' => [
+            'class' => 'app\modules\admin\Module',
+        ],
+    ],
     'components' => [
+        'ad' => [
+            'class' => 'Edvlerblog\Adldap2\Adldap2Wrapper',
+
+            'providers' => [
+                'default' => [
+                    // Connect this provider on initialisation of the LdapWrapper Class automatically
+                    'autoconnect' => true,
+
+                    'config' => [
+                        'account_suffix'        => 'xxx',
+                        'domain_controllers'    => ['xxxx'],
+                        'base_dn'               => 'xxx',
+                        'admin_username'        => 'xxx',
+                        'admin_password'        => 'xxx',
+]
+                ],
+            ],
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'IVbU4zgkj0leiyFTGxelITwcu2GxbxUr',
@@ -20,7 +48,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\components\UserLdap',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -28,10 +56,27 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
+            'enableSwiftMailerLogging' => true,
+            'messageConfig' => [
+                'from' => ['xxx' => 'LCM'],
+            ],
             'useFileTransport' => true,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'xxxx',
+                'username' => 'xxx',
+                'password' => 'xxx',
+                'port' => '587',
+                'encryption' => 'tls',
+                'streamOptions' => [
+                    'ssl' => [
+                        'allow_self_signed' => true,
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                    ],
+                ]
+            ],
+
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -44,12 +89,32 @@ $config = [
         ],
         'db' => $db,
 
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\DbMessageSource',
+                    'db' => 'db',
+                    'sourceMessageTable'=>'{{%source_message}}',
+                    'messageTable'=>'{{%message}}',
+                    'enableCaching' => true,
+                    'cachingDuration' => 10,
+                    'forceTranslation'=>true,
+                ],
+            ],
+        ],
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'admin' => 'admin/default',
+                '<controller:(attach)>/<action:\w+>/<key:\w+>' => '<controller>/<action>',
+                '<controller:(attach)>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:(attach)>/<action:\w+>' => '<controller>/<action>',
+                '<controller:(attach)>/' => '<controller>/index',
                 '<action:\w+>/<id:\d+>' => 'site/<action>',
-                '<action:\w+>/' => 'site/<action>',
+                '<action:\w+>' => 'site/<action>',
+
             ],
         ],
         'formatter' => [

@@ -26,7 +26,7 @@ class m180531_130918_create_lcm_log_table extends Migration
 
         $this->addForeignKey('log_to_logtype','lcm_log','logtype_id','lcm_logtype','logtype_id');
         $this->addForeignKey('log_to_item','lcm_log','item_id','lcm_items','item_id');
-        $this->addForeignKey('log_to_user','lcm_log','user_id','lcm_users','user_id');
+        $this->addForeignKey('log_to_user','lcm_log','user_id','lcm_user','id');
     }
 
     /**

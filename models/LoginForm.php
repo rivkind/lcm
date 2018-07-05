@@ -2,8 +2,11 @@
 
 namespace app\models;
 
+use app\components\UserLdap;
+use Edvlerblog\Adldap2\model\UserDbLdap;
 use Yii;
 use yii\base\Model;
+use app\components\UserLdapp;
 
 /**
  * LoginForm is the model behind the login form.
@@ -46,9 +49,8 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Неправильно введен логин или пароль.');
             }
         }
     }
@@ -73,9 +75,18 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+
+            $this->_user = UserLdap::findByUsername($this->username);
         }
 
         return $this->_user;
+    }
+    public function logLogin(){
+        $log_type = Logtype::findOne(['logtype_ident' => 'lcm_login']);
+        $log = new Log();
+        $log->logtype_id = $log_type->logtype_id;
+        $log->item_id = null;
+
+        $log->save();
     }
 }

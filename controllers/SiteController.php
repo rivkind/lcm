@@ -2,12 +2,25 @@
 
 namespace app\controllers;
 
+use app\models\Attachment;
 use app\models\Items;
 
+use app\models\ItemsToAttachment;
 use app\models\Log;
+use app\models\Logtype;
+use app\models\LogValue;
+use app\models\Network;
+use app\models\Node;
+use app\models\Status;
+use app\models\Type;
+use app\models\User;
+use app\models\Vendor;
+use Edvlerblog\Adldap2\model\UserDbLdap;
 use Yii;
 
+use yii\db\Expression;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -18,6 +31,8 @@ use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
+
+
     /**
      * {@inheritdoc}
      */
@@ -26,19 +41,40 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                /*'only' => ['logout'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                ],*/
+
+                'only' => ['logout', 'index', 'view', 'form', 'update'],
+                'rules' => [
+                    [
+                        'actions' => ['logout', 'index', 'view', 'form', 'update'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    /*[
+                        'allow' => true,
+                        'actions' => ['contact'],
+                        'roles' => ['permissionToUseContanctPage'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['permissionToSeeHome'],
+                    ],*/
                 ],
+
+
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['get'],
                 ],
             ],
         ];
@@ -53,10 +89,6 @@ class SiteController extends Controller
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
         ];
     }
 
@@ -67,10 +99,18 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $items = Items::find()
-            ->joinWith(['network','node','vendor','status','type'])
-            ->all();
-        return $this->render('index',[
+        if(Yii::$app->request->get('filter')){
+            $items = Items::filterItems(Yii::$app->request->get());
+        }else{
+            $items = Items::find()
+                ->joinWith(['network', 'node', 'vendor', 'status', 'type'])
+                ->all();
+        }
+
+        
+
+
+        return $this->render('index', [
             'items' => $items,
         ]);
     }
@@ -82,29 +122,84 @@ class SiteController extends Controller
     public function actionView($id)
     {
         $item = Items::find()
-            ->joinWith(['network','node','vendor','status','type'])
+            ->joinWith(['network', 'node', 'vendor', 'status', 'type'])
             ->where(['item_id' => $id])
             ->one();
 
-        $history = Log::find()
-            ->joinWith(['logtype','user'])
+        $attach_item = Attachment::find()
+            ->joinWith(['itemsToAttachments'])
             ->where(['item_id' => $id])
             ->all();
 
-        $history_count = count($history)-1;
+        $history = Log::find()
+            ->joinWith(['user','logtype'])
+            ->where(['item_id' => $id])
+            ->orderBy(['log_time'  => SORT_DESC])
+            ->all();
 
-        if($history_count == 0) $history_count = '';
-        return $this->render('view',[
+        $history_count = count($history) - 1;
+
+        if ($history_count == 0) $history_count = '';
+
+        return $this->render('view', [
             'item' => $item,
             'history' => $history,
-            'history_count' => $history_count
+            'history_count' => $history_count,
+            'attach_item' => $attach_item,
         ]);
     }
 
-    public function actionErrornew()
+
+    public function actionForm($id = 0)
     {
-        return $this->render('error_new');
+
+        if ($id == 0){$item = Items::getItemNew();}
+        else {$item = Items::getItemInfo($id);}
+        if(Yii::$app->request->post('c')){
+            $item->attach = Yii::$app->request->post('c');
+        }
+
+        if ($item->load(Yii::$app->request->post()) && $item->save()) {
+            return $this->redirect(array('site/view', 'id' => $item->item_id));
+        }
+
+        $users = User::getUserAD();
+
+        $network = Network::allNetwork();
+
+        $node = Node::allNode();
+
+        $vendor = Vendor::allVendor();
+
+        $status = Status::allStatus();
+
+        $hwsw = Type::allType();
+
+        $listQuater = Items::allListQuater();
+
+        $attach_item = Attachment::find()
+            ->joinWith(['itemsToAttachments'])
+            ->where(['item_id' => $id])
+            ->all();
+
+        $attach = Attachment::find()->all();
+
+
+        return $this->render('edit', [
+            'item' => $item,
+            'userAd' => $users,
+            'network' => $network,
+            'node' => $node,
+            'vendor' => $vendor,
+            'hwsw' => $hwsw,
+            'status' => $status,
+            'quater' => $listQuater,
+            'attach' => $attach,
+            'attach_item' => $attach_item,
+
+        ]);
     }
+
 
     /**
      * Login action.
@@ -113,12 +208,15 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = 'login';
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            $model->logLogin();
             return $this->goBack();
         }
 
@@ -135,56 +233,32 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
+        $log_type = Logtype::findOne(['logtype_ident' => 'lcm_logout']);
+        $log = new Log();
+        $log->logtype_id = $log_type->logtype_id;
+        $log->item_id = null;
+
+        $log->save();
+
         Yii::$app->user->logout();
+
 
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAttach()
-    {
-        $model = new UploadForm();
-
-        if (Yii::$app->request->isPost) {
-            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-            //$model->checkNameFile();
-            //var_dump($model->imageFile);
-            //die();
-            if ($model->upload()) {
-                // file is uploaded successfully
-                echo 'a';
-                die();
-                return;
+    public function actionUpdate($id=null){
+        if($id){
+            $item = Items::findOne($id);
+            if($item->checkUpdate() && $item->timeUpdate()){
+                Yii::$app->getSession()->setFlash('success', 'Данные обновлены!');
+            }else{
+                Yii::$app->getSession()->setFlash('error', 'Обновить данную запись невозможно!');
+            }
+            if(Yii::$app->request->referrer){
+                return $this->redirect(Yii::$app->request->referrer);
+            }else{
+                return $this->redirect('site/index');
             }
         }
-
-        return $this->render('attach', ['model' => $model]);
-
-
-        //return $this->render('attach');
     }
-
-
 }

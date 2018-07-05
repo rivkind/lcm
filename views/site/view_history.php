@@ -1,6 +1,7 @@
 <?php
 /* @var $this yii\web\View
  * @var $entry \app\models\Log
+ *
  */
 $formatter = \Yii::$app->formatter;
 ?>
@@ -16,8 +17,8 @@ $formatter = \Yii::$app->formatter;
     <? foreach ($history as $entry):?>
     <tr>
         <td><?=$formatter->format($entry->log_time, 'date');?></td>
-        <td><?=$entry->user->user_name;?></td>
-        <td>Удалено прикрепление</td>
+        <td><?=$entry->user->getUsernameCN($entry->user->username);?></td>
+        <td><?=$entry->getDescription();?></td>
     </tr>
     <? endforeach;?>
     </tbody>

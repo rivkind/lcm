@@ -1,4 +1,6 @@
 <?php
+
+use kartik\widgets\Growl;
 use yii\bootstrap\Tabs;
 
 /* @var $this yii\web\View
@@ -18,7 +20,7 @@ use yii\bootstrap\Tabs;
                     'items' => [
                         [
                             'label' => 'Форма',
-                            'content' =>  $this->render('view_item', ['item' => $item]),
+                            'content' =>  $this->render('view_item', ['item' => $item,'attach_item' => $attach_item]),
                             'active' => true
                         ],
                         [

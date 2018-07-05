@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%type}}".
@@ -51,5 +52,9 @@ class Type extends \yii\db\ActiveRecord
     public function getItems()
     {
         return $this->hasMany(Items::className(), ['type_id' => 'type_id']);
+    }
+
+    public static function allType(){
+        return ArrayHelper::map(self::find()->orderBy('type_name')->all(),'type_id','type_name');
     }
 }

@@ -56,20 +56,21 @@ $( document ).ready(function() {
 // attch script start //
     $('.attch_btn').on("click", function(e) {
         e.preventDefault();
-        $(".attchWindow").css('visibility','visible');
+        $(".attchWindow").show();
     });
-    $('body').on('click',".attch_btn",function(e){
-        //console.log('a');
+    $('body').on('click',".attch_btn_form",function(e){
         //$('.attch_btn').on("click", function(e) {
         e.preventDefault();
-        $(".attchWindow").css('visibility','visible');
-        var h = $(".attchWindow").outerHeight();
+        $(".attchWindowForm").show();
+        var h = $(".attchWindowForm").outerHeight();
         var t = $(this).offset().top;
         var l = $(this).offset().left;
+        $(".attchWindowForm").offset({top:(t-h-5), left:l})
 
     });
     $('.attchClose').on("click", function() {
-        $(".attchWindow").css('visibility','hidden');
+        $(".attchWindow").hide();
+        $(".attchWindowForm").hide();
     });
     $("#header_table").tablesorter();
     var data_sort= new Array (0,0,0,0);
@@ -86,11 +87,51 @@ $( document ).ready(function() {
     });
     //$('.header_table').fixedtableheader();
     //$("#fixedtableheader0").css('display','table');
-    $('.edit_attach').click(function(){
-        $('#label_attach').html($(this).parent().prev().prev().prev().prev().html());
-        $('#comment_edit').val($(this).parent().prev().prev().prev().html());
-        $('#data_id').val($(this).data('id'));
+    $('.upload').on('click', function() {
+        console.log('a');
+        var id_attach = $('.attchBody select').val();
+        var values = $("input[id='c']").map(function(){return $(this).val();});
+        var error = 0;
+        if(id_attach==0){
+            $(".attchBody p").css('visibility','visible');
+            $(".attchBody p").html('Выберите файл');
+        }else{
+            console.log(id_attach);
+            console.log(values);
+            for(var i=0;i<values.length;i++){
+                if(values[i]==id_attach) error=1;
+            }
+            if(error==0){
+                var name_attach = $( ".attchBody select option:selected" ).text();
+                $(".attchBlock").append("<div class='row_attach'><span class='glyphicon glyphicon-remove delete_attach' aria-hidden='true'></span>"+name_attach+"<input type='hidden' name='n[]' value='"+name_attach+"' /><input type='hidden' id='c' name='c[]' value='"+id_attach+"' /></div>");
+                $('.attchBody select').val(0);
+                $(".attchWindowForm").hide();
+            }else{
+                $(".attchBody p").css('visibility','visible');
+                $(".attchBody p").html('Такой файл уже добавлен');
+            }
+        }
+    });
+    $('body').on('click', '.delete_attach', function(e) {
+        $(this).parent().remove();
+    });
 
+    $('.user_click').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "/attach/click",
+            method: "POST",
+            //data: {id:$('#data_id').val(),attachment_descr:$('#comment_edit').val()},
+            success: function(data){
+                $.notify({
+                    // options
+                    message: 'Hello World'
+                },{
+                    // settings
+                    type: 'danger'
+                });
+            }
+        })
     });
 
 });

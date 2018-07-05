@@ -8,6 +8,7 @@ use yii\helpers\Url;
  */
 
 $this->title = 'LCM - Главная страница';
+Yii::$app->params['search'] = true;
 ?>
 
 <table class="table table-hover header_table" id="header_table" style="width: auto !important;">
@@ -36,7 +37,7 @@ $this->title = 'LCM - Главная страница';
     </thead>
     <tbody>
         <?php foreach ($items as $item):?>
-        <tr ondblclick="window.location.href='<?=Url::to(['site/view/','id'=>$item->item_id]);?>'; return false" class="link_bts">
+        <tr ondblclick="window.location.href='<?=Url::to(['site/view','id'=>$item->item_id]);?>'; return false" class="link_bts">
             <td class="resp_cell"><?=$item->getSurname($item->user_resp);?></td>
             <td class="owner_cell"><?=$item->getSurname($item->user_owner);?></td>
             <td class="network_cell"><?=$item->network->network_name;?></td>
@@ -96,7 +97,7 @@ $this->title = 'LCM - Главная страница';
                     <?=$item->getQuarter($item->date_spms);?>
                 </div>
             </td>
-            <td class="update_cell">2018.05.11</td>
+            <td class="update_cell"><?= Yii::$app->formatter->asDatetime($item->updated_at, Yii::$app->params['dateFormatDay']);?></td>
             <td><?=$item->status->status_name;?></td>
 
         </tr>
@@ -132,18 +133,18 @@ $this->title = 'LCM - Главная страница';
             <th data_id="18" class="status_cell">Status
             </th>
         </tr>
-        <tr class="search_field tablesorter-filter-row tablesorter-ignoreRow">
-            <td><input class="resp_cell_search form-control input-sm form_search" name="r" value="" type="text"></td>
-            <td><input class="owner_cell_search form-control input-sm form_search" name="ow" value="" type="text"></td>
-            <td><input class="network_cell_search form-control input-sm form_search" name="n" value="" type="text"></td>
-            <td><input class="node_cell_search form-control input-sm form_search" name="nd" value="" type="text"></td>
-            <td><input class="vendor_cell_search form-control input-sm form_search" name="v" value="" type="text"></td>
-            <td><input class="hwcw_cell_search form-control input-sm form_search" name="t" value="" type="text"></td>
-            <td><input class="hwtype_cell_search form-control input-sm form_search" name="hw" value="" type="text"></td>
-            <td><input class="product_cell_search form-control input-sm form_search" name="p" value="" type="text"></td>
-            <td><input class="product_type_cell_search form-control input-sm form_search" name="pt" value="" type="text"></td>
-            <td><input class="bom_cell_search form-control input-sm form_search" name="b" value="" type="text"></td>
-            <td><input class="descr_cell_search form-control input-sm form_search" name="d" value="" type="text"></td>
+        <tr class="search_field tablesorter-filter-row tablesorter-ignoreRow"<?php if(Yii::$app->request->get("filter")){?> style="display: table-row;" <?php }?>>
+            <td><input class="resp_cell_search form-control input-sm form_search" name="r" value="<?=Yii::$app->request->get("r")?>" type="text"></td>
+            <td><input class="owner_cell_search form-control input-sm form_search" name="ow" value="<?=Yii::$app->request->get("ow")?>" type="text"></td>
+            <td><input class="network_cell_search form-control input-sm form_search" name="n" value="<?=Yii::$app->request->get("n")?>" type="text"></td>
+            <td><input class="node_cell_search form-control input-sm form_search" name="nd" value="<?=Yii::$app->request->get("nd")?>" type="text"></td>
+            <td><input class="vendor_cell_search form-control input-sm form_search" name="v" value="<?=Yii::$app->request->get("v")?>" type="text"></td>
+            <td><input class="hwcw_cell_search form-control input-sm form_search" name="t" value="<?=Yii::$app->request->get("t")?>" type="text"></td>
+            <td><input class="hwtype_cell_search form-control input-sm form_search" name="hw" value="<?=Yii::$app->request->get("hw")?>" type="text"></td>
+            <td><input class="product_cell_search form-control input-sm form_search" name="p" value="<?=Yii::$app->request->get("p")?>" type="text"></td>
+            <td><input class="product_type_cell_search form-control input-sm form_search" name="pt" value="<?=Yii::$app->request->get("pt")?>" type="text"></td>
+            <td><input class="bom_cell_search form-control input-sm form_search" name="b" value="<?=Yii::$app->request->get("b")?>" type="text"></td>
+            <td><input class="descr_cell_search form-control input-sm form_search" name="d" value="<?=Yii::$app->request->get("d")?>" type="text"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -151,7 +152,7 @@ $this->title = 'LCM - Главная страница';
             <td></td>
             <td></td>
             <td></td>
-            <td><input class="status_cell_search form-control input-sm form_search" name="s" value="" type="text"><input value="1" name="filter" type="hidden"></td>
+            <td><input class="status_cell_search form-control input-sm form_search" name="s" value="<?=Yii::$app->request->get("s")?>" type="text"><input value="1" name="filter" type="hidden"></td>
         </tr>
         </thead>
     </table>

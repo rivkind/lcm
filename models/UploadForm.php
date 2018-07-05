@@ -17,13 +17,13 @@ class UploadForm extends Model
     /**
      * @var UploadedFile
      */
-    public $imageFile;
+    public $upload_file;
     public $commentFile;
 
     public function rules()
     {
         return [
-            [['imageFile'], 'file', 'skipOnEmpty' => false,'uploadRequired'=>"Ошибка"],
+            [['upload_file'], 'file', 'skipOnEmpty' => false,'uploadRequired'=>"Ошибка"],
             [['commentFile'], 'string'],
         ];
     }
@@ -32,31 +32,24 @@ class UploadForm extends Model
     {
 
         if ($this->validate()) {
-            $name_file = iconv('UTF-8', 'WINDOWS-1251', $this->imageFile->baseName);
-
+            $name_file = $this->imageFile->baseName;
             $filename = Yii::$app->params['fileUploadUrl'] . $name_file . '.' . $this->imageFile->extension;
             $cnt = 1;
             while (file_exists($filename)) {
                 $filename =  Yii::$app->params['fileUploadUrl'] . $name_file . ' ('.$cnt.').' . $this->imageFile->extension;
                 $cnt++;
             }
+            if($cnt != 1) $name_file = $name_file . ' ('.($cnt-1).')';
 
             $this->imageFile->saveAs($filename);
-            return true;
+            return $name_file.".".$this->imageFile->extension;
         } else {
             return false;
         }
-    }
-    public function checkNameFile()
-    {
-        $name_file = iconv('UTF-8', 'WINDOWS-1251', $this->imageFile->baseName);
 
-        $filename = Yii::$app->params['fileUploadUrl'] . $name_file . '.' . $this->imageFile->extension;
-        $cnt = 1;
-        while (file_exists($filename)) {
-            $filename =  Yii::$app->params['fileUploadUrl'] . $name_file . ' ('.$cnt.').' . $this->imageFile->extension;
-            $cnt++;
-        }
-        $this->imageFile->name = $name_file . ' ('.($cnt-1).').' . $this->imageFile->extension;
+
+
+
     }
+
 }

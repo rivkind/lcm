@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%vendor}}".
@@ -56,5 +57,9 @@ class Vendor extends \yii\db\ActiveRecord
     public function getPathImages()
     {
         return '@web/images/' . $this->vendor_name . ".png";
+    }
+
+    public static function allVendor(){
+        return ArrayHelper::map(self::find()->orderBy('vendor_name')->all(),'vendor_id','vendor_name');
     }
 }
