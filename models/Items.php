@@ -52,9 +52,25 @@ class Items extends \yii\db\ActiveRecord
     const STATUS_DATE_DANGER = 'danger';
     const STATUS_DATE_WARNING = 'warning';
     const STATUS_DATE_INFO = 'info';
+    const STATUS_NOT_ACTIVE = 3;
+    const TITLE_GA = 'General Availability';
+    const TITLE_MD = 'End Of Marketing Date';
+    const TITLE_SPARE = 'Last Order Date of Spare Parts';
+    const TITLE_SUPPORT = 'End Of Full Support';
+    const TITLE_SPMS = 'Last date can be included in SPMS contract';
+    const TITLE_SERVICE = 'End Of Service Date';
+
+
 
     public $changes;
     public $attach;
+
+
+    private static $data_sender;
+    private static $data_send;
+    private static $now;
+    private static $ns;
+
 
     public function behaviors()
     {
@@ -71,6 +87,8 @@ class Items extends \yii\db\ActiveRecord
     {
         return '{{%items}}';
     }
+
+
 
     /**
      * {@inheritdoc}
@@ -99,24 +117,24 @@ class Items extends \yii\db\ActiveRecord
     {
         return [
             'item_id' => 'Item ID',
-            'user_resp' => 'Responsible for planning',
-            'user_owner' => 'Technical owner',
-            'network_id' => 'Network ID',
-            'node_id' => 'Node ID',
-            'vendor_id' => 'Vendor ID',
-            'type_id' => 'Type ID',
-            'hw_type' => 'Hw Type',
-            'product_name' => 'Product Name',
-            'product_type' => 'Product Type',
-            'item_description' => 'Item Description',
-            'bom_code' => 'Bom Code',
-            'general_availability' => 'General Availability',
-            'date_marketing' => 'Date Marketing',
-            'date_spare_parts' => 'Date Spare Parts',
-            'date_full_support' => 'Date Full Support',
-            'date_service' => 'Date Service',
-            'date_spms' => 'Date Spms',
-            'status_id' => 'Status ID',
+            'user_resp' => Yii::t( 'header_table', 'user_resp'),
+            'user_owner' => Yii::t( 'header_table', 'user_owner'),
+            'network_id' => Yii::t( 'header_table', 'network_id'),
+            'node_id' => Yii::t( 'header_table', 'node_id'),
+            'vendor_id' => Yii::t( 'header_table', 'vendor_id'),
+            'type_id' => Yii::t( 'header_table', 'type_id'),
+            'hw_type' => Yii::t( 'header_table', 'hw_type'),
+            'product_name' => Yii::t( 'header_table', 'product_name'),
+            'product_type' => Yii::t( 'header_table', 'product_type'),
+            'item_description' => Yii::t( 'header_table', 'item_description'),
+            'bom_code' => Yii::t( 'header_table', 'bom_code'),
+            'general_availability' => Yii::t( 'header_table', 'general_availability'),
+            'date_marketing' => Yii::t( 'header_table', 'date_marketing'),
+            'date_spare_parts' => Yii::t( 'header_table', 'date_spare_parts'),
+            'date_full_support' => Yii::t( 'header_table', 'date_full_support'),
+            'date_service' => Yii::t( 'header_table', 'date_service'),
+            'date_spms' => Yii::t( 'header_table', 'date_spms'),
+            'status_id' => Yii::t( 'header_table', 'status_id' ),
         ];
     }
 
@@ -203,7 +221,10 @@ class Items extends \yii\db\ActiveRecord
         else if ($q == self::DATE_TBD) return -1;
         else {
             $p = explode("Q", $q);
-            return strtotime("20" . $p[0] . "-" . ($p[1] * 3) . "-30");
+            if($p[1]){
+                return strtotime("20" . $p[0] . "-" . ($p[1] * 3) . "-30");
+            }
+            return $q;
         }
     }
 
@@ -284,6 +305,10 @@ class Items extends \yii\db\ActiveRecord
             foreach($changed_attributes as $key=>$atr){
                 if($key!='updated_at'){
                     $data_changes[] = array($key,$this->OldAttributes[$key],$this->attributes[$key]);
+                    if($key=='general_availability' || $key=='date_marketing' || $key == 'date_spare_parts' || $key == 'date_full_support' || $key == 'date_service' || $key == 'date_spms'){
+                        $notify_item = NotifySend::findOne(['item_id' => $this->item_id, 'name' => $key]);
+                        $notify_item->delete();
+                    }
                 }
             }
 
@@ -297,99 +322,79 @@ class Items extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
-
+        $attach_changes = array();
         if($this->attach){
             $attach_changes = self::checkAttach($this->item_id,$this->attach);
         }
-            if(!$insert) {
-                $log_type = Logtype::findOne(['logtype_ident' => 'lcm_edit']);
-                Yii::$app->getSession()->setFlash('success', 'Данные обновлены');
-            }else{
-                $log_type = Logtype::findOne(['logtype_ident' => 'lcm_create']);
-                Yii::$app->getSession()->setFlash('success', 'Данные добавлены');
+        if(!$insert) {
+            $log_type = Logtype::findOne(['logtype_ident' => 'lcm_edit']);
+            Yii::$app->getSession()->setFlash('success', 'Данные обновлены');
+        }else{
+            $log_type = Logtype::findOne(['logtype_ident' => 'lcm_create']);
+            Yii::$app->getSession()->setFlash('success', 'Данные добавлены');
+        }
+
+
+        $log = new Log();
+        if($this->isNewRecord){
+            $log_type = Logtype::findOne(['logtype_ident' => 'lcm_create']);
+
+        }else{
+            $log_type = Logtype::findOne(['logtype_ident' => 'lcm_edit']);
+            if($attach_changes){
+                $this->changes = ArrayHelper::merge($this->changes, $attach_changes);
             }
 
+        }
 
-            $log = new Log();
-            if($this->isNewRecord){
-                $log_type = Logtype::findOne(['logtype_ident' => 'lcm_create']);
+        if($this->isNewRecord || count($this->changes)>0) {
+            $log->logtype_id = $log_type->logtype_id;
+            $log->item_id = $this->item_id;
 
-            }else{
-                $log_type = Logtype::findOne(['logtype_ident' => 'lcm_edit']);
-                if($attach_changes){
-                    $this->changes = ArrayHelper::merge($this->changes, $attach_changes);
-                }
+            $log->save();
+        }
 
-            }
-            //echo "<pre>";
-            //print_r($this->changes);
-            //echo "</pre>";
-            if($this->isNewRecord || count($this->changes)>0) {
-                $log->logtype_id = $log_type->logtype_id;
-                $log->item_id = $this->item_id;
 
-                $log->save();
+
+        if(!$this->isNewRecord && count($this->changes)>0){
+
+            if($attach_changes && count($attach_changes)==count($this->changes)){
+                $this->updated_at = new Expression('NOW()');
+                $this->save();
             }
 
+            $log_value = new LogValue();
+            $insert_data = $log_value->prepareInsert($this->changes,$log->log_id);
+            Yii::$app->db->createCommand()->batchInsert($log_value->tableName(),$log_value->attributes(), $insert_data)->execute();
 
+            $user_change = User::getUsernameCN(Yii::$app->user->identity->username);
 
-            if(!$this->isNewRecord && count($this->changes)>0){
+            //отправка оповещения
+            if($user_change != $this->user_resp){
+                $email_to[] = User::getUserEmail($this->user_resp);
+            }
 
-                if($attach_changes && count($attach_changes)==count($this->changes)){
-                    $this->updated_at = new Expression('NOW()');
-                    $this->save();
-                }
-
-                $log_value = new LogValue();
-                $insert_data = $log_value->prepareInsert($this->changes,$log->log_id);
-                Yii::$app->db->createCommand()->batchInsert($log_value->tableName(),$log_value->attributes(), $insert_data)->execute();
-
-                $user_change = User::getUsernameCN(Yii::$app->user->identity->username);
-
-                //отправка оповещения
-                if($user_change != $this->user_resp){
-                    $email_to[] = User::getUserEmail($this->user_resp);
-                }
-
-                if($this->user_resp!=$this->user_owner && $user_change != $this->user_owner){
-                    $email_to[] = User::getUserEmail($this->user_owner);
-                }
-
-
-
-
-                //$email_to[]="alexey.rivkind@life.com.by";
+            if($this->user_resp!=$this->user_owner && $user_change != $this->user_owner){
+                $email_to[] = User::getUserEmail($this->user_owner);
+            }
+            if(isset($email_to)){
                 $messages = [];
                 foreach ($email_to as $m) {
                     if($m){
                         $name_user = User::getNameByEmail($m);
                         $messages[] = Yii::$app->mailer->compose('update_item',['product_name' => $this->product_name,'id'=>$this->item_id,'name_user'=>$name_user])
                             ->setTo($m)
-                            ->setSubject('Тема сообщения');
-                            //->setTextBody('Текст сообщения')
-                            //->send();
-
-                        //$messages[] = Yii::$app->mailer->compose('update_item')
-                        //    ->setFrom('job-lcm@life.com.by')
-                        //    ->setSubject('Message subject')
-                        //    ->setTo($m);
+                            ->setSubject(Yii::t( 'mail_title', 'In LCM record changes have been made'));
                     }
 
                 }
                 Yii::$app->mailer->sendMultiple($messages);
-                //echo $email_resp."-".$email_owner;
-
             }
-
-
-
-
-
-
+        }
     }
 
     private static function checkAttach($id,$attach){
-        //$attach_changes = [];
+
         $attach_old = ItemsToAttachment::find()
             ->select(["attachment_id"])
             ->where(['item_id'=> $id])
@@ -428,13 +433,14 @@ class Items extends \yii\db\ActiveRecord
     public function checkUpdate(){
         $st = strtotime(date("Y-m-d",$this->updated_at));
         $now_time = Yii::$app->formatter->asTimestamp(date('Y-d-m h:i:s'));
-        if((($now_time-$st)/(24*60*60)) != Yii::$app->params['updateTime']) {
+        if((($now_time-$st)/(24*60*60)) >= Yii::$app->params['updateTime']) {
             return true;
         }
         return false;
     }
 
     public function timeUpdate(){
+
         $this->updated_at = Yii::$app->formatter->asTimestamp(date('Y-d-m h:i:s'));
         $this->save();
         $log_type = Logtype::findOne(['logtype_ident' => 'lcm_update']);
@@ -462,6 +468,94 @@ class Items extends \yii\db\ActiveRecord
         if($data["s"]){$items = $items->andFilterWhere(['like', 'status_name', $data["s"]]);}
         return $items->all();
 
+    }
+
+    public static function oldItemNotification(){
+        $status = Status::findOne(['status_id' => self::STATUS_NOT_ACTIVE]);
+        $items = self::find()->where('status_id != :status', ['status'=>$status->status_id])->all();
+        foreach ($items as $item){
+            if($item->checkUpdate()){
+                self::$data_send[$item->user_resp][]=array($item->product_name,$item->item_id);
+                self::$data_sender[] = $item->user_resp;
+                if($item->user_resp != $item->user_owner){
+                    self::$data_send[$item->user_owner][]=array($item->product_name,$item->item_id);
+                    self::$data_sender[] = $item->user_owner;
+                }
+
+            }
+        }
+
+        self::sendMail(Yii::t( 'mail_title', 'LCM event - need your action'),'update_need');
+    }
+
+    public static function notifyDeadline(){
+        self::$now =  Yii::$app->formatter->asTimestamp(date('Y-d-m'));
+
+        $notify_send = NotifySend::find()->all();
+
+        foreach ($notify_send as $n){
+            self::$ns[$n->name][$n->item_id][$n->day]= 1;
+        }
+        $items = Items::find()->all();
+        foreach($items as $item){
+
+            $item->addSender($item->general_availability,'general_availability',self::TITLE_GA);
+            $item->addSender($item->date_marketing,'date_marketing',self::TITLE_MD);
+            $item->addSender($item->date_spare_parts,'date_spare_parts',self::TITLE_SPARE);
+            $item->addSender($item->date_full_support,'date_full_support',self::TITLE_SUPPORT);
+            $item->addSender($item->date_service,'date_service',self::TITLE_SERVICE);
+            $item->addSender($item->date_spms,'date_spms',self::TITLE_SPMS);
+
+        }
+
+        self::sendMail(Yii::t( 'mail_title', 'LCM Event'),'deadline');
+    }
+
+    protected static function sendMail($title,$view){
+        if(self::$data_send){
+            $result = array_unique(self::$data_sender);
+            $data_sender = array_values($result);
+
+            $messages = [];
+            foreach($data_sender as $sender){
+                $name_user =  User::getNameByCN($sender);
+                $email = User::getUserEmail($sender);
+                $messages[] = Yii::$app->mailer->compose($view,['data_send' => self::$data_send[$sender],'name_user'=>$name_user])
+                    ->setTo($email)
+                    ->setSubject($title);
+            }
+            Yii::$app->mailer->sendMultiple($messages);
+        }
+    }
+
+    protected function needNotify($type, $d){
+
+        $data = ($d-self::$now)/(24*60*60);
+
+        if($data<=0){if(!isset(self::$ns[$type][$this->item_id][0])) return 0;}
+        else if($data>0 && $data<30){if(!isset(self::$ns[$type][$this->item_id][30])) return 30;}
+        else if($data>30 && $data<90){if(!isset(self::$ns[$type][$this->item_id][90])) return 90;}
+        else if($data>90 && $data<180){if(!isset(self::$ns[$type][$this->item_id][180])) return 180;}
+        else if($data>180 && $data<365){if(!isset(self::$ns[$type][$this->item_id][365])) return 365;}
+
+        return -1;
+    }
+
+    protected function addSender($item_date,$type,$message){
+        if($item_date != self::VALUE_NOT_AVAILABLE && $item_date != self::VALUE_TBD){
+
+            $send = $this->needNotify($type,$item_date);
+
+            if($send !=self::VALUE_TBD){
+                self::$data_send[$this->user_resp][]=array($this->product_name,$this->item_id,$send,Yii::t( 'header_table_full_title', $message));
+                self::$data_sender[] = $this->user_resp;
+                if($this->user_resp != $this->user_owner){
+                    self::$data_send[$this->user_owner][]=array($this->product_name,$this->item_id,$send,Yii::t( 'header_table_full_title', $message));
+                    self::$data_sender[] = $this->user_owner;
+                }
+                NotifySend::addNew($this->item_id,$type,$send);
+            }
+        }
     }
 
 }

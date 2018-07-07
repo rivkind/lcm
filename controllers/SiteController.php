@@ -11,6 +11,7 @@ use app\models\Logtype;
 use app\models\LogValue;
 use app\models\Network;
 use app\models\Node;
+use app\models\NotifySend;
 use app\models\Status;
 use app\models\Type;
 use app\models\User;
@@ -28,6 +29,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\UploadForm;
 use yii\web\UploadedFile;
+
 
 class SiteController extends Controller
 {
@@ -106,8 +108,6 @@ class SiteController extends Controller
                 ->joinWith(['network', 'node', 'vendor', 'status', 'type'])
                 ->all();
         }
-
-        
 
 
         return $this->render('index', [
@@ -254,6 +254,7 @@ class SiteController extends Controller
             }else{
                 Yii::$app->getSession()->setFlash('error', 'Обновить данную запись невозможно!');
             }
+
             if(Yii::$app->request->referrer){
                 return $this->redirect(Yii::$app->request->referrer);
             }else{
@@ -261,4 +262,6 @@ class SiteController extends Controller
             }
         }
     }
+
+
 }

@@ -19,12 +19,12 @@ use yii\bootstrap\Tabs;
                     'encodeLabels' => false,
                     'items' => [
                         [
-                            'label' => 'Форма',
+                            'label' => Yii::t( 'view_item', 'Form'),
                             'content' =>  $this->render('view_item', ['item' => $item,'attach_item' => $attach_item]),
                             'active' => true
                         ],
                         [
-                            'label' => 'История изменений<span class="badge">'.$history_count.'</span>',
+                            'label' => Yii::t( 'view_item', 'Changes history').'<span class="badge">'.$history_count.'</span>',
                             'content' => $this->render('view_history', ['history' => $history])
                         ]
                     ]

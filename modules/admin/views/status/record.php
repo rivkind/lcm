@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <h1>
         <?php if($model->status_name):?>
-            Обновление Status:<?= Html::encode($model->status_name) ?>
+            Обновление Status: <?= Html::encode($model->status_name) ?>
         <?php else:?>
             Создание Status
         <?php endif;?>
@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'status_name')->textInput(['maxlength' => true]) ?>
 
         <div class="form-group">
-            <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t( 'app', 'Save'), ['class' => 'btn btn-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

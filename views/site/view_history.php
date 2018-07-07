@@ -8,9 +8,9 @@ $formatter = \Yii::$app->formatter;
 <table class="table table-striped tbl_hstr">
     <thead>
     <tr>
-        <th>Дата</th>
-        <th>Пользователь</th>
-        <th>Изменения</th>
+        <th><?=Yii::t( 'history_tab', 'Date')?></th>
+        <th><?=Yii::t( 'history_tab', 'User')?></th>
+        <th><?=Yii::t( 'history_tab', 'Changes')?></th>
     </tr>
     </thead>
     <tbody>

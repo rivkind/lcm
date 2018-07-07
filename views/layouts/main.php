@@ -21,7 +21,7 @@ AppAsset::register($this);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title><?= Html::encode(Yii::$app->name) ?></title>
     <?php $this->head() ?>
 </head>
 
@@ -72,12 +72,12 @@ endif;
             <ul class="nav navbar-nav navbar-right">
 
                 <?php if (Yii::$app->user->can('lcm_admin')):?>
-                <li><a href='<?=Url::to(['admin/default']);?>'><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
+                <li><a href='<?=Url::to(['admin/default']);?>' title="<?=Yii::t( 'admin_page', 'Admin part')?>"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
                 <?php endif;?>
-                <li><a href="<?=Url::to(['site/form']);?>" title="Создание"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
-                <li><a href="<?=Url::to(['attach/']);?>" title="Прикрепления"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></a></li>
+                <li><a href="<?=Url::to(['site/form']);?>" title="<?=Yii::t( 'menu_title', 'Create')?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a></li>
+                <li><a href="<?=Url::to(['attach/']);?>" title="<?=Yii::t( 'menu_title', 'Attach')?>"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span></a></li>
                 <?php if(Yii::$app->params['search']):?>
-                <li><a class="search_btn" title="Поиск"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></li>
+                <li><a class="search_btn" title="<?=Yii::t( 'menu_title', 'Search')?>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></li>
                 <?php endif;?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a>

@@ -7,7 +7,6 @@ use yii\helpers\Url;
  * @var $item \app\models\Items
  */
 
-$this->title = 'LCM - Главная страница';
 Yii::$app->params['search'] = true;
 ?>
 

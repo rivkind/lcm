@@ -122,6 +122,10 @@ class Log extends \yii\db\ActiveRecord
             $log_values = LogValue::find()->where(['log_id' => $this->log_id])->all();
 
             return self::prepareDescription($log_values);
+        }else if($this->logtype->logtype_ident == 'lcm_create'){
+            return Yii::t( 'log_history', 'Create Item' );
+        }else if($this->logtype->logtype_ident == 'lcm_update'){
+            return Yii::t( 'log_history', 'Update data' );
         }
         return $this->logtype->logtype_name;
     }
@@ -171,6 +175,9 @@ class Log extends \yii\db\ActiveRecord
             //    $type = Yii::t( 'header_table', 'bom_code' );
             //}
             if($type == 'attach_added' || $type == 'attach_deleted'){
+                if($type == 'attach_added') $type = Yii::t( 'log_history', 'attach_added' );
+                else $type = Yii::t( 'log_history', 'attach_deleted' );
+
                 $txt.="<div>".$type.": <b>".$current."</b></div>";
             }else{
                 $txt.="<div>".Yii::t( 'header_table', $type ).": <b>".$prev."</b> на <b>".$current."</b></div>";

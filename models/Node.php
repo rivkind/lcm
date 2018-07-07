@@ -42,7 +42,7 @@ class Node extends \yii\db\ActiveRecord
     {
         return [
             'node_id' => 'Node ID',
-            'node_name' => 'Node Name',
+            'node_name' => Yii::t( 'header_table', 'node_id'),
         ];
     }
 

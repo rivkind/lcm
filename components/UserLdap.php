@@ -32,8 +32,10 @@ class UserLdap extends UserDbLdap
             if($ldapUserGuid != null){
                 // если не нулл то обновить фамилию
                 $userObjectDb = static::findOne(['guid' => $ldapUserGuid->getConvertedGuid()]);
-                $userObjectDb->username = $username;
-                $userObjectDb->save();
+                if($userObjectDb != null){
+                    $userObjectDb->username = $username;
+                    $userObjectDb->save();
+                }
             }
         }else{
             $ldapUser = $userObjectDb->queryLdapUserObject();
@@ -86,7 +88,7 @@ class UserLdap extends UserDbLdap
         $userObjectDb = new static();
 
         //Username has to be set before a LDAP query
-        $userObjectDb->username = $username;
+        $userObjectDb->username = self::prepareLoginNewUser($username);
         $userObjectDb->setIndividualGroupAssignmentOptions($individualGroupAssignmentOptions);
 
         //Check if user exists in LDAP.
@@ -98,8 +100,10 @@ class UserLdap extends UserDbLdap
             $userObjectDb->guid = $ll->getConvertedGuid();
             $roles = $userObjectDb->updateGroupAssignment();
 
+
+
             //When a group is needed for login and no roles are assigned to user, don't create one
-            if (count($roles) > 0 || static::getGroupAssigmentOptions('LOGIN_POSSIBLE_WITH_ROLE_ASSIGNED_MATCHING_REGEX',$userObjectDb->individualGroupAssignmentOptions) == null) {
+            if (count($roles) > 0 || (isset($userObjectDb->individualGroupAssignmentOptions) && static::getGroupAssigmentOptions('LOGIN_POSSIBLE_WITH_ROLE_ASSIGNED_MATCHING_REGEX',$userObjectDb->individualGroupAssignmentOptions) == null)) {
 
 
                 $userObjectDb->generateAuthKey();
@@ -114,6 +118,11 @@ class UserLdap extends UserDbLdap
             Yii::endProfile('createNewUser', static::YII2_PROFILE_NAME . 'createNewUser');
         }
         return $userObjectDb;
+    }
+
+    protected function prepareLoginNewUser($username){
+        $fio = explode('.',$username);
+        return ucfirst($fio[0]).".".ucfirst($fio[1]);
     }
 
 }

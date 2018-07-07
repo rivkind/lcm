@@ -42,7 +42,7 @@ class Type extends \yii\db\ActiveRecord
     {
         return [
             'type_id' => 'Type ID',
-            'type_name' => 'Type Name',
+            'type_name' => Yii::t( 'header_table', 'type_id'),
         ];
     }
 

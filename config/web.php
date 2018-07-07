@@ -2,11 +2,14 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$mail = require __DIR__ . '/mail.php';
+$ad = require __DIR__ . '/ad.php';
 
 $config = [
     'id' => 'basic',
     'name'=>'LCM',
     'language' =>'ru',
+    'sourceLanguage'=>'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -19,24 +22,7 @@ $config = [
         ],
     ],
     'components' => [
-        'ad' => [
-            'class' => 'Edvlerblog\Adldap2\Adldap2Wrapper',
-
-            'providers' => [
-                'default' => [
-                    // Connect this provider on initialisation of the LdapWrapper Class automatically
-                    'autoconnect' => true,
-
-                    'config' => [
-                        'account_suffix'        => 'xxx',
-                        'domain_controllers'    => ['xxx'],
-                        'base_dn'               => 'xxx',
-                        'admin_username'        => 'xxx',
-                        'admin_password'        => 'xx',
-]
-                ],
-            ],
-        ],
+        'ad' =>  $ad,
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
@@ -54,30 +40,7 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'enableSwiftMailerLogging' => true,
-            'messageConfig' => [
-                'from' => ['xxx' => 'LCM'],
-            ],
-            'useFileTransport' => true,
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => 'xxx',
-                'username' => 'xxxx',
-                'password' => 'xxx',
-                'port' => '587',
-                'encryption' => 'tls',
-                'streamOptions' => [
-                    'ssl' => [
-                        'allow_self_signed' => true,
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                    ],
-                ]
-            ],
-
-        ],
+        'mailer' => $mail,
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -97,7 +60,7 @@ $config = [
                     'sourceMessageTable'=>'{{%source_message}}',
                     'messageTable'=>'{{%message}}',
                     'enableCaching' => true,
-                    'cachingDuration' => 10,
+                    'cachingDuration' => 3600,
                     'forceTranslation'=>true,
                 ],
             ],

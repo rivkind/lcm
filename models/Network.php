@@ -42,7 +42,7 @@ class Network extends \yii\db\ActiveRecord
     {
         return [
             'network_id' => 'Network ID',
-            'network_name' => 'Network Name',
+            'network_name' => Yii::t( 'header_table', 'network_id'),
         ];
     }
 

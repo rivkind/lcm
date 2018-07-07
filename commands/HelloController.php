@@ -7,6 +7,8 @@
 
 namespace app\commands;
 
+use app\models\Items;
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -30,5 +32,41 @@ class HelloController extends Controller
         echo $message . "\n";
 
         return ExitCode::OK;
+    }
+
+    public function actionTest()
+    {
+
+
+
+        Yii::$app->mailer->compose()
+            ->setTo('alexey.rivkind@life.com.by')
+            ->setSubject('Тема сообщения')
+            ->setTextBody('Текст сообщения')
+            ->send();
+        echo 'a';
+
+        return ExitCode::OK;
+    }
+
+    public function actionNotification(){
+        Yii::$app->mailer->compose()
+            ->setTo('alexey.rivkind@life.com.by')
+            ->setSubject('Тема сообщения')
+            ->setTextBody('Текст сообщения')
+            ->send();
+        //Items::oldItemNotification();
+        return ExitCode::OK;
+    }
+
+    public function actionDeadline(){
+        Yii::$app->mailer->compose()
+            ->setTo('alexey.rivkind@life.com.by')
+            ->setSubject('Тема сообщения')
+            ->setTextBody('Текст сообщения')
+            ->send();
+        //Items::notifyDeadline();
+        return ExitCode::OK;
+
     }
 }

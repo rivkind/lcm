@@ -42,7 +42,7 @@ class Vendor extends \yii\db\ActiveRecord
     {
         return [
             'vendor_id' => 'Vendor ID',
-            'vendor_name' => 'Vendor Name',
+            'vendor_name' => Yii::t( 'header_table', 'vendor_id'),
         ];
     }
 

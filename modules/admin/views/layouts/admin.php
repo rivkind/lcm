@@ -71,19 +71,19 @@ endif;
                 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                     <div class="menu_section">
-                        <h3>Admin part</h3>
+                        <h3><?=Yii::t( 'admin_page', 'Admin part')?></h3>
                         <?=
                         \yiister\gentelella\widgets\Menu::widget(
                             [
                                 "items" => [
-                                    ["label" => "Home", "url" => "/", "icon" => "home"],
-                                    ["label" => "Network", "url" => ["network/"], "icon" => "files-o"],
-                                    ["label" => "Node", "url" => ["node/"], "icon" => "files-o"],
-                                    ["label" => "Status", "url" => ["status/"], "icon" => "files-o"],
-                                    ["label" => "Vendor", "url" => ["vendor/"], "icon" => "files-o"],
-                                    ["label" => "HW/SW", "url" => ["type/"], "icon" => "files-o"],
-                                    ["label" => "Logs", "url" => ["log/"], "icon" => "files-o"],
-                                    ["label" => "Language", "url" => ["message/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'Home'), "url" => "/", "icon" => "home"],
+                                    ["label" => Yii::t( 'admin_menu', 'Network'), "url" => ["network/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'Node'), "url" => ["node/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'Status'), "url" => ["status/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'Vendor'), "url" => ["vendor/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'HW/SW'), "url" => ["type/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'Logs'), "url" => ["log/"], "icon" => "files-o"],
+                                    ["label" => Yii::t( 'admin_menu', 'Language'), "url" => ["message/"], "icon" => "files-o"],
 
                                 ],
                             ]
@@ -96,18 +96,7 @@ endif;
 
                 <!-- /menu footer buttons -->
                 <div class="sidebar-footer hidden-small">
-                    <a data-toggle="tooltip" data-placement="top" title="Settings">
-                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                    </a>
-                    <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                    </a>
-                    <a data-toggle="tooltip" data-placement="top" title="Lock">
-                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                    </a>
-                    <a data-toggle="tooltip" data-placement="top" title="Logout">
-                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                    </a>
+
                 </div>
                 <!-- /menu footer buttons -->
             </div>
@@ -129,7 +118,7 @@ endif;
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                <li><a href="<?=Url::to(['/site/logout/']);?>"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                <li><a href="<?=Url::to(['/site/logout/']);?>"><i class="fa fa-sign-out pull-right"></i> <?=Yii::t( 'app', 'Exit' );?></a>
                                 </li>
                             </ul>
                         </li>
@@ -168,12 +157,7 @@ endif;
         </div>
         <!-- /page content -->
         <!-- footer content -->
-        <footer>
-            <div class="pull-right">
 
-            </div>
-            <div class="clearfix"></div>
-        </footer>
         <!-- /footer content -->
     </div>
 

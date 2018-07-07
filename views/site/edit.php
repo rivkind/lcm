@@ -110,7 +110,7 @@ use yii\widgets\ActiveForm;
             </td>
         </tr>
         <tr>
-            <th class="rved-label">Attach</th>
+            <th class="rved-label"><?=Yii::t( 'header_table', 'Attach')?></th>
             <td class="rved-values" colspan="3">
                 <div class='attchBlock'>
                     <?php foreach ($attach_item as $ai):?>
@@ -123,19 +123,19 @@ use yii\widgets\ActiveForm;
                     <?php endforeach;?>
 
                 </div>
-                <button class='btn btn-sm attch_btn_form'>Attach</button>
+                <button class='btn btn-sm attch_btn_form'><?=Yii::t( 'btn_form', 'Attach')?></button>
                 <div class='attchWindowForm'>
                     <div class='attchHeader'>
                         <button type="button" class="close attchClose" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        Добавление прикрепления
+                        <?=Yii::t( 'attach_window', 'Attach title')?>
                     </div>
                     <div class='attchBody'>
 
                         <div>
                             <select class="form-control">
-                                <option value='0'>Выберите файл</option>
+                                <option value='0'><?=Yii::t( 'attach_window', 'Choose file')?></option>
                                 <?php foreach($attach as $att):?>
                                     <option value='<?=$att->attachment_id?>'><?=$att->attachment_name?></option>
                                 <?php endforeach;?>
@@ -143,7 +143,7 @@ use yii\widgets\ActiveForm;
                             <p></p>
                         </div>
                         <div class='attchFooter'>
-                            <button type="button" class="btn btn-sm upload">Attach</button>
+                            <button type="button" class="btn btn-sm upload"><?=Yii::t( 'attach_window', 'Attach button')?></button>
                         </div>
                     </div>
                 </div>
@@ -151,8 +151,8 @@ use yii\widgets\ActiveForm;
         </tr>
         <tr>
             <td colspan='4' class='text-center bottomBtnSubmitBlock'>
-                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-default btn-sm', 'name' => 'add_doc']) ?>
-                <a href="<?=Yii::$app->request->referrer?>" class='btn btn-default btn-sm'>Отмена</a>
+                <?= Html::submitButton(Yii::t( 'app', 'Save'), ['class' => 'btn btn-default btn-sm', 'name' => 'add_doc']) ?>
+                <a href="<?=Yii::$app->request->referrer?>" class='btn btn-default btn-sm'><?=Yii::t( 'app', 'Cancel')?></a>
             <td>
         </tr>
         </tbody>

@@ -42,7 +42,7 @@ class Status extends \yii\db\ActiveRecord
     {
         return [
             'status_id' => 'Status ID',
-            'status_name' => 'Status Name',
+            'status_name' => Yii::t( 'header_table', 'status_id'),
         ];
     }
 
