@@ -9,11 +9,11 @@ return [
             'autoconnect' => true,
 
             'config' => [
-                'account_suffix'        => 'xxxx',
-                'domain_controllers'    => ['xxxx'],
-                'base_dn'               => 'xxxx',
-                'admin_username'        => 'xxxx',
-                'admin_password'        => 'xxxx',
+                'account_suffix'        => 'xxx',
+                'domain_controllers'    => ['xxx'],
+                'base_dn'               => 'xxx',
+                'admin_username'        => 'xxx',
+                'admin_password'        => 'xxx',
             ]
         ],
     ],

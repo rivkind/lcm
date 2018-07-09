@@ -3,8 +3,8 @@
 return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=lcm',
-    'username' => 'xxxx',
-    'password' => 'xxxx',
+    'username' => 'xxx',
+    'password' => 'xxx',
     'charset' => 'utf8',
     'tablePrefix'=>'lcm_',
     // Schema cache options (for production environment)

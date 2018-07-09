@@ -4,14 +4,14 @@ return [
     'class' => 'yii\swiftmailer\Mailer',
     'enableSwiftMailerLogging' => true,
     'messageConfig' => [
-        'from' => ['xxxx' => 'LCM'],
+        'from' => ['xxx' => 'LCM'],
     ],
     'useFileTransport' => false,
     'transport' => [
         'class' => 'Swift_SmtpTransport',
-        'host' => 'xxxx',
-        'username' => 'xxxx',
-        'password' => 'xxxx',
+        'host' => 'xxx',
+        'username' => 'xxx',
+        'password' => 'xxx',
         'port' => '587',
         'encryption' => 'tls',
         'streamOptions' => [
